@@ -138,20 +138,23 @@ const emptyArray: never[] = [];
 export function App() {
   const [section, setSection] = useState<Section>("Ana Panel");
   const [backendReady, setBackendReady] = useState(false);
+  const pollingRef = useRef(false);
+  const mountedRef = useRef(true);
   
   // Backend hazır olana kadar bekle (max 30 saniye)
   useEffect(() => {
+    mountedRef.current = true;
     let attempts = 0;
     const maxAttempts = 60; // 30 saniye (500ms * 60)
     
-    const checkBackend = async () => {
+    const checkBackend = async (): Promise<boolean> => {
       try {
         const response = await fetch(`${import.meta.env.VITE_YONTAI_API_URL ?? "http://127.0.0.1:8765"}/api/v1/system/health`, {
           method: 'GET',
           signal: AbortSignal.timeout(1000)
         });
         if (response.ok) {
-          setBackendReady(true);
+          if (mountedRef.current) setBackendReady(true);
           return true;
         }
       } catch {
@@ -161,15 +164,25 @@ export function App() {
     };
     
     const pollBackend = async () => {
-      while (attempts < maxAttempts && !backendReady) {
+      if (pollingRef.current) return; // Prevent duplicate polling
+      pollingRef.current = true;
+      
+      while (attempts < maxAttempts) {
+        if (!mountedRef.current) return;
         attempts++;
         const ready = await checkBackend();
         if (ready) break;
+        if (!mountedRef.current) return;
         await new Promise(resolve => setTimeout(resolve, 500));
       }
+      pollingRef.current = false;
     };
     
     pollBackend();
+    
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
   
   const health = useQuery({ 

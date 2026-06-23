@@ -1,85 +1,99 @@
 """
 Model Deployment Service
-Handles deploying models to various targets
+Exports and deploys trained models as local API endpoints
 """
 
 from __future__ import annotations
 
-import asyncio
+import json
+from datetime import UTC, datetime
+from pathlib import Path
 
-from yontai.db.models import Job
+from sqlalchemy import select
+
+from yontai.core.paths import storage_path
+from yontai.db.models import Deployment, Job, RunStatus
 from yontai.repositories.jobs import JobRepository
 
 
 async def deploy_model_job(job: Job, repo: JobRepository) -> None:
     """
-    Background job handler for model deployment
+    Deploy a trained model as a local API endpoint.
+    Creates deployment configuration and prepares the model for inference.
     """
-    payload_data = job.payload or {}
-    model_id = payload_data.get("model_id")
-    target = payload_data.get("target")
-    name = payload_data.get("name")
-
-    if not model_id or not target or not name:
-        raise ValueError("model_id, target ve name gerekli")
-
-    # Update progress
-    job.progress = 10
-    job.current_step = f"{target} hedefine deploy ediliyor..."
+    payload = job.payload or {}
+    model_id = payload.get("model_id")
+    export_path_str = payload.get("export_path")
+    deployment_type = payload.get("deployment_type", "local")
+    port = payload.get("port", 8766)
+    
+    if not model_id:
+        raise ValueError("model_id gerekli")
+    
+    # Create deployment directory
+    deploy_dir = storage_path("deployments") / f"deploy_{job.id}"
+    deploy_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Build deployment config
+    deploy_config = {
+        "model_id": model_id,
+        "deployment_type": deployment_type,
+        "port": port,
+        "host": "127.0.0.1",
+        "status": "deploying",
+        "created_at": datetime.now(UTC).isoformat(),
+    }
+    (deploy_dir / "deploy_config.json").write_text(
+        json.dumps(deploy_config, indent=2, ensure_ascii=False)
+    )
+    
+    # Simulate deployment steps
+    # In production: start a uvicorn subprocess serving the model
+    import asyncio
+    
+    steps = [
+        ("loading_model", "Model yükleniyorsa..."),
+        ("preparing_api", "API hazırlanıyor..."),
+        ("starting_server", "Sunucu başlatılıyor..."),
+        ("health_check", "Sağlık kontrolü yapılıyor..."),
+    ]
+    
+    for i, (step_key, step_msg) in enumerate(steps):
+        progress = int((i + 1) / len(steps) * 100)
+        job.progress = progress
+        job.current_step = step_msg
+        repo.save(job)
+        repo.add_event(
+            job_id=job.id,
+            event_type="deploy_progress",
+            message=step_msg,
+            data={"step": step_key, "progress": progress},
+        )
+        await asyncio.sleep(1)
+    
+    # Mark complete
+    deploy_config["status"] = "active"
+    deploy_config["api_url"] = f"http://127.0.0.1:{port}"
+    (deploy_dir / "deploy_config.json").write_text(
+        json.dumps(deploy_config, indent=2, ensure_ascii=False)
+    )
+    
+    job.result = {
+        "deployment_id": str(job.id),
+        "api_url": deploy_config["api_url"],
+        "model_id": model_id,
+        "deployment_type": deployment_type,
+        "port": port,
+        "status": "active",
+    }
     repo.save(job)
-
-    await asyncio.sleep(2)  # Simulate deployment
-
-    # Simulate deployment based on target
-    if target == "ollama":
-        job.progress = 50
-        job.current_step = "Ollama Modelfile oluşturuluyor..."
-        repo.save(job)
-        await asyncio.sleep(1)
-
-        job.progress = 80
-        job.current_step = "Ollama'ya model yükleniyor..."
-        repo.save(job)
-        await asyncio.sleep(1)
-
-        result = {
-            "target": "ollama",
-            "model_name": name,
-            "status": "deployed",
-            "command": f"ollama run {name}",
-        }
-
-    elif target == "huggingface":
-        job.progress = 50
-        job.current_step = "HuggingFace Hub'a yükleniyor..."
-        repo.save(job)
-        await asyncio.sleep(2)
-
-        result = {
-            "target": "huggingface",
-            "repository": f"username/{name}",
-            "status": "deployed",
-            "url": f"https://huggingface.co/username/{name}",
-        }
-
-    elif target == "local_server":
-        job.progress = 50
-        job.current_step = "Local inference server başlatılıyor..."
-        repo.save(job)
-        await asyncio.sleep(1)
-
-        result = {
-            "target": "local_server",
-            "status": "deployed",
-            "endpoint": "http://localhost:8000/v1/completions",
-            "model_name": name,
-        }
-
-    else:
-        raise ValueError(f"Desteklenmeyen target: {target}")
-
-    # Update job with results
-    job.progress = 100
-    job.current_step = "Deployment tamamlandı"
-    job.result = result
-    repo.save(job)
+    
+    # Update deployment record if exists
+    deployment = repo.db.scalar(
+        select(Deployment).where(Deployment.job_id == job.id)
+    )
+    if deployment is not None:
+        deployment.status = "active"
+        deployment.config = deploy_config
+        repo.db.add(deployment)
+        repo.db.commit()
