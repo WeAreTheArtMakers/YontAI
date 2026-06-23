@@ -1,0 +1,18 @@
+{
+  "name": "yontai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Turkish-first local AI engineering desktop platform.",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "pnpm --filter @yontai/desktop dev",
+    "desktop": "pnpm --filter @yontai/desktop tauri dev",
+    "build": "pnpm --filter @yontai/desktop build",
+    "lint": "pnpm --filter @yontai/desktop lint",
+    "typecheck": "pnpm --filter @yontai/desktop typecheck"
+  },
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=9.0.0"
+  }
+}
