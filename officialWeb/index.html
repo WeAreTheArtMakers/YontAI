@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YontAI — Build Your Own AI Coding Assistant</title>
+  <meta name="description" content="YontAI is a local AI coding lab for Apple Silicon. Train models, ingest web code, understand project context with RAG, and supercharge your productivity." data-i18n="hero.subtitle" />
+  <meta name="keywords" content="AI coding assistant, MLX, Apple Silicon, local LLM, code completion, RAG" />
+  <meta property="og:title" content="YontAI — AI Coding Assistant for Apple Silicon" />
+  <meta property="og:description" content="Build, train, and deploy your own coding AI models locally." />
+  <meta property="og:url" content="https://github.com/WeAreTheArtMakers/YontAI" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== Animated Background ===== -->
+  <div class="animated-bg" aria-hidden="true">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+  <div class="particles" aria-hidden="true">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <!-- ===== Navigation ===== -->
+  <nav class="nav" id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon">Y</span>
+        <span>YontAI</span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#features" data-i18n="nav.features">Features</a></li>
+        <li><a href="#architecture" data-i18n="nav.architecture">Architecture</a></li>
+        <li><a href="#performance" data-i18n="nav.performance">Performance</a></li>
+        <li><a href="#about" data-i18n="nav.about">About</a></li>
+        <li><a href="https://github.com/WeAreTheArtMakers/YontAI" target="_blank" rel="noopener" data-i18n="nav.viewOnGitHub">GitHub</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="lang-toggle" id="langToggle" data-i18n-switcher onclick="langManager.toggleLanguage()">EN</button>
+        <a href="https://github.com/WeAreTheArtMakers/YontAI" target="_blank" rel="noopener" class="btn btn-github">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          <span data-i18n="common.starOnGitHub">Star</span>
+        </a>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== Hero Section ===== -->
+  <section class="hero" id="home">
+    <div class="hero-badge" data-i18n="hero.badge">🚀 Optimized for Apple Silicon</div>
+
+    <div class="typing-container">
+      <span data-i18n="hero.typingPrefix">While you code, YontAI </span>
+      <span class="typing-text" id="typingText"></span>
+    </div>
+
+    <h1 class="hero-title gradient-text" data-i18n="hero.title">Build Your Own<br />AI Coding Assistant</h1>
+
+    <p class="hero-subtitle" data-i18n="hero.subtitle">
+      Train your own coding AI model, gather code from the internet, understand project context, and supercharge your productivity with intelligent code completion.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#features" class="btn btn-primary" data-i18n="hero.ctaPrimary">Get Started</a>
+      <a href="https://github.com/WeAreTheArtMakers/YontAI" target="_blank" rel="noopener" class="btn btn-secondary" data-i18n="hero.ctaSecondary">Explore on GitHub</a>
+    </div>
+  </section>
+
+  <!-- ===== Features Section ===== -->
+  <section class="section" id="features">
+    <div class="section-header reveal">
+      <h2 class="gradient-text" data-i18n="features.title">Powerful Features</h2>
+      <p data-i18n="features.subtitle">YontAI is designed to take your local AI coding assistant to the next level.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="glass-card feature-card reveal">
+        <div class="feature-icon">⚡</div>
+        <h3 data-i18n="features.mlx.title">MLX Apple Silicon Support</h3>
+        <p data-i18n="features.mlx.desc">Up to 40% speed improvement on M1/M2/M3/M4 chips. Run 7B models on 16GB RAM with 4-bit quantization.</p>
+      </div>
+
+      <div class="glass-card feature-card reveal">
+        <div class="feature-icon">🔄</div>
+        <h3 data-i18n="features.multiModel.title">Multi-Model Orchestration</h3>
+        <p data-i18n="features.multiModel.desc">Smart routing: 1-3B fast model for FIM, 7-16B smart model for chat. Automatic switching, zero latency.</p>
+      </div>
+
+      <div class="glass-card feature-card reveal">
+        <div class="feature-icon">⌨️</div>
+        <h3 data-i18n="features.fim.title">FIM Code Completion</h3>
+        <p data-i18n="features.fim.desc">Fill-in-the-Middle with DeepSeek-Coder format. Analyzes prefix/suffix context. <150ms response time.</p>
+      </div>
+
+      <div class="glass-card feature-card reveal">
+        <div class="feature-icon">🔍</div>
+        <h3 data-i18n="features.rag.title">RAG Context Engine</h3>
+        <p data-i18n="features.rag.desc">AST parsing in 17 languages with tree-sitter. ChromaDB vector search. Smart context with dependency graph.</p>
+      </div>
+
+      <div class="glass-card feature-card reveal">
+        <div class="feature-icon">🌐</div>
+        <h3 data-i18n="features.knowledge.title">Web Knowledge Ingestion</h3>
+        <p data-i18n="features.knowledge.desc">GitHub API, npm, PyPI integration. One-click code fetching, cleaning, embedding, and RAG indexing.</p>
+      </div>
+
+      <div class="glass-card feature-card reveal">
+        <div class="feature-icon">🧪</div>
+        <h3 data-i18n="features.training.title">AI Lab Model Training</h3>
+        <p data-i18n="features.training.desc">LoRA/QLoRA fine-tuning with MLX. Dataset builder for instruction, FIM, and chat format training data.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Architecture Section ===== -->
+  <section class="section" id="architecture">
+    <div class="section-header reveal">
+      <h2 class="gradient-text" data-i18n="architecture.title">System Architecture</h2>
+      <p data-i18n="architecture.subtitle">YontAI is built on a modular, extensible architecture.</p>
+    </div>
+
+    <div class="architecture-visual reveal">
+      <div class="arch-layer ui glass-card">
+        <span class="layer-icon">🖥️</span>
+        <span class="layer-name" data-i18n="architecture.layers.ui">User Interface</span>
+        <span class="layer-desc">VS Code Extension · Tauri Desktop</span>
+      </div>
+      <div class="arch-arrow">⬇</div>
+
+      <div class="arch-layer api glass-card">
+        <span class="layer-icon">🌐</span>
+        <span class="layer-name" data-i18n="architecture.layers.api">API Layer</span>
+        <span class="layer-desc">FastAPI · REST · SSE Streaming</span>
+      </div>
+      <div class="arch-arrow">⬇</div>
+
+      <div class="arch-layer runtime glass-card">
+        <span class="layer-icon">⚙️</span>
+        <span class="layer-name" data-i18n="architecture.layers.runtime">Model Runtime</span>
+        <span class="layer-desc">MLX · Ollama · llama.cpp</span>
+      </div>
+      <div class="arch-arrow">⬇</div>
+
+      <div class="arch-layer rag glass-card">
+        <span class="layer-icon">📚</span>
+        <span class="layer-name" data-i18n="architecture.layers.rag">RAG Engine</span>
+        <span class="layer-desc">ChromaDB · tree-sitter · Memory Graph</span>
+      </div>
+      <div class="arch-arrow">⬇</div>
+
+      <div class="arch-layer training glass-card">
+        <span class="layer-icon">🔬</span>
+        <span class="layer-name" data-i18n="architecture.layers.training">Training Pipeline</span>
+        <span class="layer-desc">MLX LoRA · Dataset Builder · Web Fetcher</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Performance Section ===== -->
+  <section class="section" id="performance">
+    <div class="section-header reveal">
+      <h2 class="gradient-text" data-i18n="performance.title">Performance (M1 Pro 16 GB)</h2>
+      <p data-i18n="performance.subtitle">Real-world benchmark results on Apple Silicon.</p>
+    </div>
+
+    <div class="performance-table-wrap reveal">
+      <table class="performance-table">
+        <thead>
+          <tr>
+            <th data-i18n="performance.model">Model</th>
+            <th data-i18n="performance.quantization">Quantization</th>
+            <th data-i18n="performance.tokensPerSec">Token/s</th>
+            <th data-i18n="performance.ramUsage">RAM Usage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="model-name" data-i18n="performance.rows.deepseek13.model">DeepSeek-Coder 1.3B</td>
+            <td class="mono" data-i18n="performance.rows.deepseek13.quant">Q4</td>
+            <td class="token-speed" data-i18n="performance.rows.deepseek13.tokens">45-55</td>
+            <td class="ram-usage" data-i18n="performance.rows.deepseek13.ram">~2.5 GB</td>
+          </tr>
+          <tr>
+            <td class="model-name" data-i18n="performance.rows.deepseek67.model">DeepSeek-Coder 6.7B</td>
+            <td class="mono" data-i18n="performance.rows.deepseek67.quant">Q4</td>
+            <td class="token-speed" data-i18n="performance.rows.deepseek67.tokens">15-22</td>
+            <td class="ram-usage" data-i18n="performance.rows.deepseek67.ram">~8 GB</td>
+          </tr>
+          <tr>
+            <td class="model-name" data-i18n="performance.rows.codeqwen.model">CodeQwen-7B</td>
+            <td class="mono" data-i18n="performance.rows.codeqwen.quant">Q4</td>
+            <td class="token-speed" data-i18n="performance.rows.codeqwen.tokens">12-18</td>
+            <td class="ram-usage" data-i18n="performance.rows.codeqwen.ram">~7 GB</td>
+          </tr>
+          <tr>
+            <td class="model-name" data-i18n="performance.rows.starcode.model">StarCoder2-3B</td>
+            <td class="mono" data-i18n="performance.rows.starcode.quant">Q4</td>
+            <td class="token-speed" data-i18n="performance.rows.starcode.tokens">30-40</td>
+            <td class="ram-usage" data-i18n="performance.rows.starcode.ram">~4 GB</td>
+          </tr>
+          <tr>
+            <td class="model-name" data-i18n="performance.rows.fim.model">FIM (1.3B)</td>
+            <td class="mono" data-i18n="performance.rows.fim.quant">Q4</td>
+            <td class="token-speed" data-i18n="performance.rows.fim.tokens"><200ms</td>
+            <td class="ram-usage" data-i18n="performance.rows.fim.ram">~2.5 GB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== About Section ===== -->
+  <section class="section" id="about">
+    <div class="about-grid">
+      <div class="about-content reveal">
+        <h2 class="gradient-text" data-i18n="about.title">What is YontAI?</h2>
+        <p data-i18n="about.subtitle">
+          YontAI is not just a coding assistant — it's a local AI engineering lab where you create, train, and evolve your own coding AI models.
+        </p>
+        <p data-i18n="about.mission">
+          Our mission is to empower every developer to create AI models tailored to their specific needs. Fully local, fully private, fully under your control.
+        </p>
+        <a href="https://github.com/WeAreTheArtMakers/YontAI" target="_blank" rel="noopener" class="btn btn-primary mt-3" data-i18n="about.cta">Get Started</a>
+      </div>
+
+      <div class="about-stats reveal">
+        <div class="about-stat glass-card">
+          <div class="stat-value">🔓</div>
+          <div class="stat-label" data-i18n="about.stat1">Open Source</div>
+        </div>
+        <div class="about-stat glass-card">
+          <div class="stat-value">🔒</div>
+          <div class="stat-label" data-i18n="about.stat2">Privacy First</div>
+        </div>
+        <div class="about-stat glass-card">
+          <div class="stat-value">💻</div>
+          <div class="stat-label" data-i18n="about.stat3">Apple Silicon</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">
+          <span class="logo-icon">Y</span>
+          <span>YontAI</span>
+        </a>
+        <p data-i18n="footer.description">Build your own AI coding assistant. Open source, privacy-first, optimized for Apple Silicon.</p>
+      </div>
+
+      <div>
+        <h4 data-i18n="footer.quickLinks">Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="#features" data-i18n="nav.features">Features</a></li>
+          <li><a href="#architecture" data-i18n="nav.architecture">Architecture</a></li>
+          <li><a href="#performance" data-i18n="nav.performance">Performance</a></li>
+          <li><a href="#about" data-i18n="nav.about">About</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 data-i18n="footer.resources">Resources</h4>
+        <ul class="footer-links">
+          <li><a href="https://github.com/WeAreTheArtMakers/YontAI/blob/main/ARCHITECTURE.md" target="_blank" rel="noopener" data-i18n="footer.architecture">Architecture</a></li>
+          <li><a href="https://github.com/WeAreTheArtMakers/YontAI/blob/main/README.md" target="_blank" rel="noopener" data-i18n="footer.documentation">Documentation</a></li>
+          <li><a href="https://github.com/WeAreTheArtMakers/YontAI/releases" target="_blank" rel="noopener" data-i18n="footer.chnagelog">Changelog</a></li>
+          <li><a href="https://github.com/WeAreTheArtMakers/YontAI/issues" target="_blank" rel="noopener">Issues</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p data-i18n="footer.copyright" data-i18n-params='{"year":"2025"}'>© 2025 YontAI. All rights reserved.</p>
+      <div class="social-links">
+        <a href="https://github.com/WeAreTheArtMakers/YontAI" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== Scripts ===== -->
+  <script src="js/languages-manager.js"></script>
+  <script>
+    // ----- Typing Effect -----
+    (function() {
+      const typingEl = document.getElementById('typingText');
+      if (!typingEl) return;
+
+      const texts = langManager.getCurrentLanguage() === 'tr'
+        ? ['kodunu tamamlar', 'hatalarını bulur', 'testlerini yazar', 'refactor eder', 'dökümantasyon ekler']
+        : ['completes your code', 'finds your bugs', 'writes your tests', 'refactors your code', 'adds documentation'];
+      
+      let textIndex = 0;
+      let charIndex = 0;
+      let isDeleting = false;
+      let timeout;
+
+      function type() {
+        const currentText = texts[textIndex];
+        
+        if (isDeleting) {
+          typingEl.textContent = currentText.substring(0, charIndex - 1);
+          charIndex--;
+        } else {
+          typingEl.textContent = currentText.substring(0, charIndex + 1);
+          charIndex++;
+        }
+
+        if (!isDeleting && charIndex === currentText.length) {
+          timeout = setTimeout(() => { isDeleting = true; type(); }, 2000);
+          return;
+        }
+
+        if (isDeleting && charIndex === 0) {
+          isDeleting = false;
+          textIndex = (textIndex + 1) % texts.length;
+          timeout = setTimeout(type, 500);
+          return;
+        }
+
+        timeout = setTimeout(type, isDeleting ? 40 : 80);
+      }
+
+      // Update typing texts on language change
+      document.addEventListener('languageChanged', () => {
+        clearTimeout(timeout);
+        const newTexts = langManager.getCurrentLanguage() === 'tr'
+          ? ['kodunu tamamlar', 'hatalarını bulur', 'testlerini yazar', 'refactor eder', 'dökümantasyon ekler']
+          : ['completes your code', 'finds your bugs', 'writes your tests', 'refactors your code', 'adds documentation'];
+        
+        // Preserve current textIndex but use new texts
+        textIndex = textIndex % newTexts.length;
+        charIndex = 0;
+        isDeleting = false;
+        setTimeout(type, 500);
+      });
+
+      type();
+    })();
+
+    // ----- Scroll Reveal -----
+    (function() {
+      const revealElements = document.querySelectorAll('.reveal');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.15 });
+
+      revealElements.forEach(el => observer.observe(el));
+    })();
+
+    // ----- Navbar Scroll Effect -----
+    (function() {
+      const navbar = document.getElementById('navbar');
+      let lastScroll = 0;
+
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+        lastScroll = currentScroll;
+      });
+    })();
+
+    // ----- Mobile Nav Toggle -----
+    (function() {
+      const toggle = document.getElementById('navToggle');
+      const links = document.getElementById('navLinks');
+
+      if (toggle && links) {
+        toggle.addEventListener('click', () => {
+          toggle.classList.toggle('active');
+          links.classList.toggle('open');
+        });
+
+        // Close on link click
+        links.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            toggle.classList.remove('active');
+            links.classList.remove('open');
+          });
+        });
+      }
+    })();
+
+    // ----- Smooth Scroll for Anchor Links -----
+    (function() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const href = this.getAttribute('href');
+          if (href === '#') return;
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
