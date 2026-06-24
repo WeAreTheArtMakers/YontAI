@@ -21,7 +21,7 @@ cd "$PROJECT_DIR"
 # 1. Test
 echo -e "${arrow} Testler çalıştırılıyor..."
 cd "$BACKEND_DIR"
-if python3 -m pytest tests/ -v --tb=short -q 2>&1 | tail -1 | grep -q "passed"; then
+if python3 -m pytest tests/ -v --tb=short -q 2>&1; then
     echo -e "  ${checkmark} Tüm testler geçti"
 else
     echo -e "  ${cross} Testler başarısız!"
