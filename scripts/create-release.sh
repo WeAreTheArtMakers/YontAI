@@ -62,51 +62,32 @@ fi
 
 # 5. GitHub Release
 echo -e "${arrow} GitHub Release oluşturuluyor..."
-RELEASE_NOTES=$(cat <<EOF
-# YontAI v${VERSION} - AI Coding Lab
+RELEASE_NOTES="# YontAI v${VERSION} - AI Coding Lab
+Features: MLX Apple Silicon, Multi-Model, FIM, RAG, Web Knowledge, AI Lab Training
+Install: bash scripts/install.sh
+Web: https://WeAreTheArtMakers.github.io/YontAI/"
 
-## 🚀 Özellikler
-- **MLX Apple Silicon Desteği** - M1/M2/M3/M4'te %40 hız artışı
-- **Çoklu Model Orkestrasyonu** - Akıllı routing (1-3B FIM + 7-16B chat)
-- **FIM Kod Tamamlama** - DeepSeek-Coder formatı, <150ms
-- **RAG Bağlam Motoru** - 17 dilde AST parsing + ChromaDB
-- **Web Kod Toplama** - GitHub/npm/PyPI entegrasyonu
-- **AI Lab Eğitimi** - MLX LoRA fine-tuning + dataset builder
-
-## 📦 İçerik
-- macOS .app bundle
-- Python FastAPI backend (19 modül)
-- VS Code extension tasarımı
-- TR/EN web sitesi
-
-## 🔧 Kurulum
-\`\`\`bash
-bash scripts/install.sh
-cd apps/backend && uvicorn yontai.main:app --host 127.0.0.1 --port 8765 --reload
-\`\`\`
-
-## 🌐 Web Sitesi
-https://WeAreTheArtMakers.github.io/YontAI/
-
-## 📖 Detaylı Dökümantasyon
-ARCHITECTURE.md - 10 bölümlük mimari analiz
-EOF
-)
+echo "$RELEASE_NOTES" > /tmp/yontai-release-notes.md
 
 if command -v gh &>/dev/null; then
-    gh release create "v${VERSION}" \
-        --title "YontAI v${VERSION}" \
-        --notes "$RELEASE_NOTES" \
-        $APP_ZIP 2>&1 || {
-        echo -e "  ${YELLOW}⚠️ Release oluşturulamadı, gh CLI token kontrol et${NC}"
-        echo -e "  ${arrow} Manual: gh release create v${VERSION} --title 'YontAI v${VERSION}' $APP_ZIP"
-    }
+    if [ -n "$APP_ZIP" ]; then
+        gh release create "v${VERSION}" \
+            --title "YontAI v${VERSION}" \
+            --notes-file /tmp/yontai-release-notes.md \
+            "$APP_ZIP" 2>&1 || echo -e "  ${YELLOW}⚠️ gh token gerekli: gh auth login${NC}"
+    else
+        gh release create "v${VERSION}" \
+            --title "YontAI v${VERSION}" \
+            --notes-file /tmp/yontai-release-notes.md 2>&1 || echo -e "  ${YELLOW}⚠️ gh token gerekli${NC}"
+    fi
     echo -e "  ${checkmark} Release: v${VERSION}"
 else
     echo -e "  ${YELLOW}⚠️ gh CLI bulunamadı${NC}"
     echo -e "  ${arrow} Yükle: brew install gh"
     echo -e "  ${arrow} Manual: gh release create v${VERSION} --title 'YontAI v${VERSION}' $APP_ZIP"
 fi
+
+rm -f /tmp/yontai-release-notes.md
 
 echo -e "\n${CYAN}╔══════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║     ✅ RELEASE HAZIR!                    ║${NC}"
