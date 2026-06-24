@@ -9,9 +9,10 @@ import hashlib
 import json
 import logging
 import re
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -247,7 +248,7 @@ class DatasetBuilder:
                 {
                     "role": "user",
                     "content": f"Explain the {fn.language} function `{fn.name}` that takes "
-                    f"parameters ({fn.args}){f' and returns {fn.return_type}' if fn.return_type else ''}.",
+                    f"parameters ({fn.args}){f' and returns {fn.return_type}' if fn.return_type else ''}.",  # noqa: E501
                 },
                 {"role": "assistant", "content": fn.body},
             ]
@@ -352,7 +353,7 @@ class DatasetBuilder:
                 args = match.group("args") or ""
                 body = match.group("body") or ""
                 decorators = match.group("decorators") or ""
-                return_type = match.group("return_type") or match.group("return_type_simple") or None
+                return_type = match.group("return_type") or match.group("return_type_simple") or None  # noqa: E501
 
                 body = body.strip()
                 if len(body) < self._min_body:

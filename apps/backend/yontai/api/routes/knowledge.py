@@ -101,7 +101,7 @@ def _get_context_engine() -> ContextEngine:
         return engine
     except Exception as exc:
         logger.error("Failed to initialize ContextEngine: %s", exc)
-        raise HTTPException(status_code=503, detail="Knowledge base not available")
+        raise HTTPException(status_code=503, detail="Knowledge base not available") from exc
 
 
 def _get_vector_store() -> VectorStore:
@@ -116,7 +116,7 @@ def _get_vector_store() -> VectorStore:
         return store
     except Exception as exc:
         logger.error("Failed to initialize VectorStore: %s", exc)
-        raise HTTPException(status_code=503, detail="Vector store not available")
+        raise HTTPException(status_code=503, detail="Vector store not available") from exc
 
 
 # ---------------------------------------------------------------------------
@@ -206,7 +206,7 @@ async def ingest_knowledge(
 
         # Build summary
         if indexed_count > 0:
-            summary = f"Successfully ingested {len(fetched_files)} files ({indexed_count} chunks) from {request.url}"
+            summary = f"Successfully ingested {len(fetched_files)} files ({indexed_count} chunks) from {request.url}"  # noqa: E501
         else:
             summary = f"No content was indexed from {request.url}"
 
@@ -288,7 +288,7 @@ async def search_knowledge(
 
     except Exception as exc:
         logger.exception("Knowledge search failed")
-        raise HTTPException(status_code=500, detail=f"Search failed: {exc}")
+        raise HTTPException(status_code=500, detail=f"Search failed: {exc}") from exc
 
 
 @router.get("/stats", response_model=KnowledgeStats)
@@ -310,7 +310,7 @@ async def knowledge_stats(
         )
     except Exception as exc:
         logger.exception("Failed to get knowledge stats")
-        raise HTTPException(status_code=500, detail=f"Stats failed: {exc}")
+        raise HTTPException(status_code=500, detail=f"Stats failed: {exc}") from exc
 
 
 @router.delete("/clear", status_code=200)
@@ -358,4 +358,4 @@ async def clear_knowledge_base(
 
     except Exception as exc:
         logger.exception("Failed to clear knowledge base")
-        raise HTTPException(status_code=500, detail=f"Clear failed: {exc}")
+        raise HTTPException(status_code=500, detail=f"Clear failed: {exc}") from exc

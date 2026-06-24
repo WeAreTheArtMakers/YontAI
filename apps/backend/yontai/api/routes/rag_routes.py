@@ -90,7 +90,7 @@ class ContextRequest(BaseModel):
 
     query: str = Field(..., description="The user query to build context for")
     current_file: str | None = Field(default=None, description="Path to the currently open file")
-    max_tokens: int = Field(default=2048, ge=256, le=8192, description="Maximum context token budget")
+    max_tokens: int = Field(default=2048, ge=256, le=8192, description="Maximum context token budget")  # noqa: E501
     project_id: str | None = Field(default=None, description="Filter context to a specific project")
 
 
@@ -122,7 +122,7 @@ def _get_context_engine() -> ContextEngine:
         return ContextEngine()
     except Exception as exc:
         logger.error("Failed to initialize ContextEngine: %s", exc)
-        raise HTTPException(status_code=503, detail="RAG engine not available")
+        raise HTTPException(status_code=503, detail="RAG engine not available") from exc
 
 
 # ---------------------------------------------------------------------------
@@ -204,7 +204,7 @@ async def index_project(
 
     except Exception as exc:
         logger.exception("Project indexing failed for: %s", request.project_path)
-        raise HTTPException(status_code=500, detail=f"Indexing failed: {exc}")
+        raise HTTPException(status_code=500, detail=f"Indexing failed: {exc}") from exc
 
 
 @router.post("/search", response_model=SearchResponse)
@@ -261,7 +261,7 @@ async def search_code(
 
     except Exception as exc:
         logger.exception("Code search failed")
-        raise HTTPException(status_code=500, detail=f"Search failed: {exc}")
+        raise HTTPException(status_code=500, detail=f"Search failed: {exc}") from exc
 
 
 @router.post("/context", response_model=ContextResponse)
@@ -321,7 +321,7 @@ async def build_context(
 
     except Exception as exc:
         logger.exception("Context building failed")
-        raise HTTPException(status_code=500, detail=f"Context building failed: {exc}")
+        raise HTTPException(status_code=500, detail=f"Context building failed: {exc}") from exc
 
 
 @router.get("/stats", response_model=RAGStats)
@@ -345,7 +345,7 @@ async def rag_stats(
 
     except Exception as exc:
         logger.exception("Failed to get RAG stats")
-        raise HTTPException(status_code=500, detail=f"Stats failed: {exc}")
+        raise HTTPException(status_code=500, detail=f"Stats failed: {exc}") from exc
 
 
 @router.delete("/project/{project_id}", status_code=200)
@@ -385,4 +385,4 @@ async def delete_project_index(
         raise
     except Exception as exc:
         logger.exception("Failed to delete project index")
-        raise HTTPException(status_code=500, detail=f"Delete failed: {exc}")
+        raise HTTPException(status_code=500, detail=f"Delete failed: {exc}") from exc

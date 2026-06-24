@@ -11,7 +11,7 @@ import logging
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Protocol
+from typing import Any, Protocol
 
 import mlx.core as mx
 import mlx.nn as nn
@@ -232,7 +232,7 @@ class MLXLoRATrainer:
             loss = loss / acc_steps
 
             # Backward pass
-            grads = mx.grad(lambda: loss, trainable_params)()
+            grads = mx.grad(lambda loss_val=loss: loss_val, trainable_params)()
             for i, g in enumerate(grads):
                 if accumulated_grads[i] is None:
                     accumulated_grads[i] = g
@@ -387,7 +387,7 @@ class MLXLoRATrainer:
         def _find_and_replace(module: nn.Module, path: str = "") -> None:
             for key, child in list(module.children().items()):
                 child_path = f"{path}.{key}" if path else key
-                if any(child_path.endswith(t) for t in target_names) and isinstance(child, nn.Linear):
+                if any(child_path.endswith(t) for t in target_names) and isinstance(child, nn.Linear):  # noqa: E501
                     lora_layer = LoRALinear(
                         child,
                         rank=self.lora_config.rank,

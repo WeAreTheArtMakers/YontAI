@@ -260,7 +260,7 @@ class ProjectMemoryGraph:
                 sib_path = str(sibling.resolve())
                 if sib_path not in seen and len(context_files) < max_files:
                     # Skip common non-code files
-                    if sibling.suffix.lower() in (".py", ".ts", ".tsx", ".js", ".jsx", ".rs", ".go"):
+                    if sibling.suffix.lower() in (".py", ".ts", ".tsx", ".js", ".jsx", ".rs", ".go"):  # noqa: E501
                         context_files.append(sib_path)
                         seen.add(sib_path)
 
