@@ -8,8 +8,10 @@ from yontai.api.routes import (
     exports,
     files,
     jobs,
+    knowledge,
     models,
     projects,
+    rag_routes,
     system,
     training,
 )
@@ -26,3 +28,5 @@ api_router.include_router(exports.router, prefix="/exports", tags=["exports"])
 api_router.include_router(deployments.router, prefix="/deployments", tags=["deployments"])
 api_router.include_router(jobs.router, prefix="/jobs", tags=["jobs"])
 api_router.include_router(files.router, prefix="/files", tags=["files"])
+api_router.include_router(knowledge.router, prefix="/knowledge", tags=["knowledge"])
+api_router.include_router(rag_routes.router, prefix="/rag", tags=["rag"])
