@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 
 from yontai.api.router import api_router
 from yontai.core.config import get_settings
@@ -58,6 +59,15 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     app.include_router(api_router, prefix="/api/v1")
+    
+    @app.get("/", include_in_schema=False)
+    async def root():
+        return RedirectResponse(url="/api/v1/system/health")
+    
+    @app.get("/health", include_in_schema=False)
+    async def health_check():
+        return {"status": "ok", "service": "yontai-backend"}
+    
     return app
 
 
