@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import json
 import logging
-import re
 from pathlib import Path
 from typing import Any
 
@@ -24,7 +23,7 @@ from yontai.rag.context_engine import ContextEngine
 logger = logging.getLogger(__name__)
 
 # Default system message for general use
-DEFAULT_SYSTEM_MESSAGE = """You are YontAI, an expert coding assistant running locally on Apple Silicon.
+DEFAULT_SYSTEM_MESSAGE = """You are YontAI, an expert coding assistant running locally on Apple S
 You help users write, debug, and understand code.
 
 Guidelines:
@@ -189,13 +188,13 @@ class FrameworkDetector:
             return None
 
         # ESLint
-        for config in (".eslintrc", ".eslintrc.js", ".eslintrc.json", ".eslintrc.yaml", ".eslintrc.yml"):
+        for config in (".eslintrc", ".eslintrc.js", ".eslintrc.json", ".eslintrc.yaml"):
             if (project_root / config).exists():
                 self._style_cache[file_path] = "ESLint"
                 return "ESLint"
 
         # Prettier
-        for config in (".prettierrc", ".prettierrc.js", ".prettierrc.json", ".prettierrc.yaml", ".prettierrc.toml"):
+        for config in (".prettierrc", ".prettierrc.js", ".prettierrc.json", ".prettierrc.yaml"):
             if (project_root / config).exists():
                 self._style_cache[file_path] = "Prettier"
                 return "Prettier"
@@ -331,7 +330,7 @@ Include edge cases, error conditions, and normal cases.
 
     @staticmethod
     def refactor_code(code: str, language: str = "python") -> str:
-        return f"""Refactor the following {language} code to be more maintainable, readable, and efficient.
+        return f"""Refactor the following {language} code to be more maintainable, readable, and 
 Apply best practices for the language/framework.
 
 ```{language}
@@ -362,7 +361,7 @@ Follow the language's typing best practices.
 
     @staticmethod
     def find_bugs(code: str, language: str = "python") -> str:
-        return f"""Analyze the following {language} code for bugs, logical errors, and potential runtime issues.
+        return f"""Analyze the following {language} code for bugs, logical errors, and potential 
 Be specific about line numbers and suggest fixes.
 
 ```{language}

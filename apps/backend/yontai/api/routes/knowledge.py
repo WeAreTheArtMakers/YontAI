@@ -11,7 +11,6 @@ Architecture (from ARCHITECTURE.md §5):
 
 from __future__ import annotations
 
-import json
 import logging
 from typing import Any
 
@@ -327,9 +326,10 @@ async def clear_knowledge_base(
         # ChromaDB doesn't have a bulk delete, so we use delete with no filter
         # which deletes all records in the collection
         collection_name = "yontai_knowledge_base"
-        from yontai.core.paths import storage_path
         import chromadb
         from chromadb.config import Settings
+
+        from yontai.core.paths import storage_path
 
         client = chromadb.PersistentClient(
             path=str(storage_path("knowledge_db")),

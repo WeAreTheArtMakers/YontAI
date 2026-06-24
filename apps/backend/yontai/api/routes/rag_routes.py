@@ -18,7 +18,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
-from yontai.rag.context_engine import ContextEngine, VectorStore, CodeIndexer
+from yontai.rag.context_engine import CodeIndexer, ContextEngine
 
 logger = logging.getLogger(__name__)
 
