@@ -1,293 +1,367 @@
-# 🧠 YontAI — Local LLM Fine-Tuning Platform
+# 🧠 YontAI — Yerel Yapay Zeka Kod Asistanı
 
 [English](#english) | [Türkçe](#turkish)
-
----
-
-<a name="english"></a>
-## 🇬🇧 English
-
-**YontAI** is a professional desktop platform for **fine-tuning**, **benchmarking**, **deploying**, and **exporting** open-source LLMs locally. Built with privacy-first architecture, it enables enterprises and AI researchers to train models on their own hardware without cloud costs.
-
-### ✨ Key Features
-
-| Feature | Description |
-|---|---|
-| **Model Hub** | Discover and manage models from HuggingFace, Ollama, and local GGUF |
-| **Fine-Tuning & RL** | LoRA, QLoRA, DPO, PPO, GRPO, ORPO, KTO — 7+ training methods |
-| **Chat & Workspace** | Real-time chat and testing with your models |
-| **Benchmark** | Performance comparison: latency, token/s, GPU/CPU |
-| **Export** | Export to GGUF, safetensors formats |
-| **Deploy** | Deploy model as local API endpoint |
-| **Model Doctor** | Hardware compatibility testing, troubleshooting |
-| **Observability** | MLflow integration for training metrics and loss curves |
-| **Data Recipes** | Dataset analysis, quality scoring, augmentation |
-
-### 🏗️ Tech Stack
-
-```
-Frontend:    React 18 · TypeScript · TailwindCSS · shadcn/ui
-Desktop:     Tauri v2 (Rust)
-Backend:     FastAPI · Python 3.12 · SQLAlchemy · Alembic
-AI Runtime:  🤗 Transformers · PEFT · TRL · Unsloth · Sentence-Transformers
-Tracking:    MLflow
-Database:    SQLite (PostgreSQL ready)
-```
-
-### 🚀 Quick Start
-
-#### Requirements
-
-- **Python 3.12+** (mandatory)
-- **Node.js 18+** and **pnpm**
-- **Ollama** (optional, for chat features)
-- **Rust toolchain** (for Tauri build)
-
-#### Installation
-
-```bash
-# Clone the repo
-git clone https://github.com/WeAreTheArtMakers/YontAI.git
-cd YontAI
-
-# Backend setup
-python3.12 -m venv .venv
-source .venv/bin/activate
-cd apps/backend
-pip install -e ".[ai,dev]"
-cp .env.example .env
-alembic upgrade head
-cd ../..
-
-# Frontend setup
-pnpm install
-
-# Start backend (Terminal 1)
-./start-backend.sh
-
-# Start desktop app (Terminal 2)
-cd apps/desktop
-pnpm tauri dev
-```
-
-#### API Documentation
-
-When backend is running: [http://127.0.0.1:8765/docs](http://127.0.0.1:8765/docs)
-
-### 🏗️ Project Architecture
-
-```
-YontAI/
-├── apps/
-│   ├── backend/          # FastAPI backend service
-│   │   ├── yontai/
-│   │   │   ├── api/      # REST API routes (11 groups)
-│   │   │   ├── training/ # Fine-tuning service
-│   │   │   ├── runtime/  # AI runtimes (6 types)
-│   │   │   ├── jobs/     # Job queue system
-│   │   │   ├── db/       # Database models (11 tables)
-│   │   │   └── core/     # Config, security, logging
-│   │   └── tests/        # Pytest test suite
-│   └── desktop/          # Tauri v2 desktop app
-├── packages/
-│   ├── shared-types/     # Shared TypeScript types
-│   ├── ui/               # UI component library
-│   └── config/           # Shared configuration
-├── models/               # Model storage
-├── datasets/             # Dataset storage
-└── runs/                 # MLflow run records
-```
-
-### 📋 API Routes
-
-| Route Group | Description |
-|---|---|
-| `/api/v1/system` | System status, hardware info |
-| `/api/v1/models` | Model CRUD, HuggingFace/Ollama discovery |
-| `/api/v1/datasets` | Dataset management |
-| `/api/v1/training` | Fine-tuning planning and execution |
-| `/api/v1/benchmarks` | Performance benchmarks |
-| `/api/v1/diagnostics` | System diagnostics (Model Doctor) |
-| `/api/v1/exports` | Model export |
-| `/api/v1/deployments` | Model deployment |
-| `/api/v1/jobs` | Job queue management |
-| `/api/v1/files` | File browsing and extraction |
-
-### 🧪 Test Status
-
-```bash
-# Backend tests (8/8 passing)
-cd apps/backend && source .venv/bin/activate && pytest -v
-
-# Frontend lint
-cd apps/desktop && pnpm lint
-```
-
-### 💼 Why YontAI?
-
-| Feature | **YontAI** | LM Studio | Ollama | Axolotl |
-|---|---|---|---|---|
-| Fine-Tuning | ✅ **7+ methods** | ❌ | ❌ | ✅ |
-| Desktop GUI | ✅ **Tauri** | ✅ | ❌ CLI | ❌ |
-| Benchmark | ✅ | ✅ | ❌ | ❌ |
-| Export/Deploy | ✅ | ⚠️ Partial | ✅ | ❌ |
-| Turkish UI | ✅ **Yes** | ❌ | ❌ | ❌ |
-| Local Operation | ✅ | ✅ | ✅ | ✅ |
-| Cost | **One-time license** | Free | Free | Free |
-
-### 📄 License
-
-Commercial license. Contact us for details.
-
-### 📞 Contact
-
-- GitHub: [WeAreTheArtMakers](https://github.com/WeAreTheArtMakers)
-
----
-
-> ⚠️ **Note:** This repository contains source code. Users must provide all required dependencies. For pre-built binary packages, please obtain a licensed version.
 
 ---
 
 <a name="turkish"></a>
 ## 🇹🇷 Türkçe
 
-**YontAI**, açık kaynak LLM'leri yerel ortamınızda **fine-tune** etmek, **benchmark** yapmak, **deploy** etmek ve **export** etmek için tasarlanmış, **Türkçe öncelikli** profesyonel masaüstü AI platformudur. Gizlilik odaklı mimarisiyle, kurumsal kullanıcıların ve AI araştırmacılarının kendi donanımlarında, bulut maliyeti olmadan modeller geliştirmesini sağlar.
+**YontAI**, Apple Silicon (M1/M2/M3/M4) için optimize edilmiş, tamamen yerel çalışan bir yapay zeka kod asistanıdır. MLX, Ollama ve llama.cpp backend'lerini tek bir arayüzde birleştirir, proje bağlamını anlar (RAG) ve akıllı kod tamamlama (FIM) sağlar.
 
-### ✨ Öne Çıkan Özellikler
+> 🚀 **M1 Pro 16 GB** için özel olarak optimize edilmiştir. Kuantize modellerde GPU'da %40'a varan hız artışı!
+
+---
+
+## 🚀 Özellikler
 
 | Özellik | Açıklama |
-|---|---|
-| **Model Hub** | HuggingFace, Ollama ve yerel GGUF modellerini keşfedin ve yönetin |
-| **Fine-Tuning & RL** | LoRA, QLoRA, DPO, PPO, GRPO, ORPO, KTO — 7+ eğitim yöntemi |
-| **Chat & Workspace** | Modellerinizle gerçek zamanlı sohbet ve test |
-| **Benchmark** | Latans, token/s, GPU/CPU performans karşılaştırmaları |
-| **Export** | GGUF, safetensors formatlarında dışa aktarma |
-| **Deploy** | Modeli yerel API endpoint'i olarak yayınlama |
-| **Model Doctor** | Donanım uyumluluk testi, sorun giderme |
-| **Observability** | MLflow ile eğitim metrikleri, loss grafikleri |
-| **Data Recipes** | Veri kümesi analizi, kalite skoru, augmentasyon |
+|---------|----------|
+| **MLX Desteği** | Apple Silicon için optimize edilmiş MLX formatında modelleri çalıştırır |
+| **Çoklu Model** | Hızlı (1-3B FIM) + Akıllı (7-16B sohbet) katmanlı model stratejisi |
+| **FIM Tamamlama** | DeepSeek-Coder formatında Fill-in-the-Middle kod tamamlama |
+| **RAG Bağlam** | tree-sitter + ChromaDB ile proje kodunu indeksleme ve akıllı bağlam arama |
+| **HF → MLX** | HuggingFace modellerini tek tıkla MLX formatına dönüştürme |
+| **LRU Önbellek** | 16 GB RAM için optimize, otomatik model boşaltma |
+| **Ollama Uyumlu** | Ollama ile tam uyumlu, mevcut modelleri kullanma |
+| **Prompt Şablonları** | Türkçe kod açıklama, test yazma, refactoring, kod inceleme şablonları |
+| **Donanım Tespiti** | Apple Silicon çip modeli, MLX/MPS/CUDA/ROCm otomatik tespit |
+| **Gizlilik** | Tamamen yerel çalışma, bulut bağımlılığı yok |
 
-### 🏗️ Teknoloji Yığını
+---
 
-```
-Frontend:    React 18 · TypeScript · TailwindCSS · shadcn/ui
-Desktop:     Tauri v2 (Rust)
-Backend:     FastAPI · Python 3.12 · SQLAlchemy · Alembic
-AI Runtime:  🤗 Transformers · PEFT · TRL · Unsloth · Sentence-Transformers
-Tracking:    MLflow
-Veritabanı:  SQLite (PostgreSQL hazır)
-```
+## 📋 Gereksinimler
 
-### 🚀 Hızlı Başlangıç
+| Bileşen | Minimum | Önerilen |
+|---------|---------|----------|
+| **İşlemci** | Apple Silicon (M1) | Apple M1 Pro |
+| **RAM** | 8 GB | 16 GB |
+| **Python** | 3.11 | 3.12 |
+| **Depolama** | 10 GB boş alan | 50 GB+ (modeller için) |
+| **İşletim Sistemi** | macOS 14+ | macOS 15+ |
 
-#### Gereksinimler
+---
 
-- **Python 3.12+** (zorunlu)
-- **Node.js 18+** ve **pnpm**
-- **Ollama** (chat özellikleri için opsiyonel)
-- **Rust toolchain** (Tauri build için)
+## ⚡ Hızlı Başlangıç
 
-#### Kurulum
+### 1. Repoyu Klonla
 
 ```bash
-# Repo'yu klonla
 git clone https://github.com/WeAreTheArtMakers/YontAI.git
 cd YontAI
-
-# Backend kurulumu
-python3.12 -m venv .venv
-source .venv/bin/activate
-cd apps/backend
-pip install -e ".[ai,dev]"
-cp .env.example .env
-alembic upgrade head
-cd ../..
-
-# Frontend kurulumu
-pnpm install
-
-# Backend'i başlat (Terminal 1)
-./start-backend.sh
-
-# Desktop uygulamasını başlat (Terminal 2)
-cd apps/desktop
-pnpm tauri dev
 ```
 
-#### API Dokümantasyonu
+### 2. Backend Kurulumu
 
-Backend çalışırken: [http://127.0.0.1:8765/docs](http://127.0.0.1:8765/docs)
+```bash
+cd apps/backend
 
-### 🏗️ Proje Mimarisi
+# Temel bağımlılıklar
+pip install -e .
+
+# MLX desteği (Apple Silicon için önerilen)
+pip install -e ".[mlx]"
+
+# RAG desteği (kod bağlam motoru)
+pip install -e ".[rag]"
+
+# AI kütüphaneleri (transformers, torch, vs.)
+pip install -e ".[ai]"
+```
+
+### 3. MLX Modelini İndir ve Dönüştür
+
+```bash
+# DeepSeek-Coder 1.3B (FIM için hızlı model ~2.5 GB)
+python3 -m mlx_lm.convert \
+  --hf-path deepseek-ai/deepseek-coder-1.3b-instruct \
+  --mlx-path models/mlx/deepseek-coder-1.3b-instruct
+
+# DeepSeek-Coder 6.7B (sohbet için akıllı model ~12 GB)
+python3 -m mlx_lm.convert \
+  --hf-path deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct \
+  --mlx-path models/mlx/DeepSeek-Coder-V2-Lite-Instruct \
+  --q-bits 4
+```
+
+### 4. Backend'i Başlat
+
+```bash
+cd apps/backend
+uvicorn yontai.main:app --host 127.0.0.1 --port 8765 --reload
+```
+
+### 5. API'yi Test Et
+
+```bash
+# Donanım profilini görüntüle
+curl http://localhost:8765/api/v1/system/hardware | python3 -m json.tool
+
+# Sağlık kontrolü
+curl http://localhost:8765/api/v1/system/health
+
+# MLX modellerini listele
+curl http://localhost:8765/api/v1/models/mlx/list
+
+# FIM kod tamamlama (imleç öncesi/sonrası)
+curl -X POST http://localhost:8765/api/v1/models/fim \
+  -H "Content-Type: application/json" \
+  -d '{"prefix": "def fibonacci(n):\\n    if n <= 1:", "suffix": "    return fib", "max_tokens": 100}'
+
+# Sohbet
+curl -X POST http://localhost:8765/api/v1/models/chat \
+  -H "Content-Type: application/json" \
+  -d '{"model_id": "deepseek-coder", "prompt": "Python ile async HTTP sunucusu nasıl yazılır?"}'
+```
+
+---
+
+## 🏗️ Mimari
+
+```
+┌─────────────────────────────────────────────────────┐
+│                    YontAI API                         │
+│                    FastAPI + Uvicorn                   │
+├─────────┬───────────┬────────────┬───────────────────┤
+│  MLX    │  Ollama   │  llama.cpp │   Transformers     │
+│ Runtime │  Client   │  (future)  │   Runtime          │
+├─────────┴───────────┴────────────┴───────────────────┤
+│              Model Orchestrator                       │
+│     Hızlı (1-3B) · Akıllı (7-16B) · Derin (>16B)     │
+│              LRU Cache · Bellek Yönetimi              │
+├─────────────────────────────────────────────────────┤
+│              RAG Context Engine                       │
+│    tree-sitter AST · ChromaDB · Dinamik Bağlam       │
+├─────────────────────────────────────────────────────┤
+│              Prompt Templates                         │
+│    FIM · Chat · Test · Refactoring · Türkçe          │
+└─────────────────────────────────────────────────────┘
+```
+
+### Model Katmanı
+
+| Katman | Model Boyutu | Backend | Sıcaklık | Kullanım |
+|--------|-------------|---------|---------|----------|
+| **Hızlı (Fast)** | 1-3B parametre | MLX | 0.1 | FIM, satır tamamlama, import ekleme |
+| **Akıllı (Smart)** | 7-16B parametre | MLX / Ollama | 0.3 | Sohbet, refactoring, kod inceleme |
+| **Derin (Large)** | >16B parametre | Ollama | 0.5 | Derin analiz, dökümantasyon |
+
+### Kod Bağlam Motoru (RAG)
+
+```
+Proje Dizini → tree-sitter AST → Fonksiyon/Sınıf Çıkarma
+                                   ↓
+    Sorgu ← ChromaDB vektör arama ← Embedding (all-MiniLM-L6-v2)
+       ↓
+    Dinamik Prompt Bağlamı → LLM → Akıllı Tamamlama
+```
+
+**Desteklenen Diller:** Python, JavaScript, TypeScript, Rust, Go, Java, C/C++, Ruby, PHP, Swift, Kotlin, Scala (17 dil)
+
+---
+
+## 📡 API Dokümantasyonu
+
+### 🎯 Model Yönetimi
+
+| Metod | Endpoint | Açıklama |
+|-------|----------|----------|
+| `GET` | `/api/v1/models` | Tüm modelleri listele |
+| `POST` | `/api/v1/models` | Yeni model kaydet |
+| `GET` | `/api/v1/models/{id}` | Model detayı |
+| `DELETE` | `/api/v1/models/{id}` | Model sil |
+| `PATCH` | `/api/v1/models/{id}` | Model güncelle |
+| `POST` | `/api/v1/models/{id}/analyze` | Model analizi |
+
+### 🤖 MLX Modelleri
+
+| Metod | Endpoint | Açıklama |
+|-------|----------|----------|
+| `GET` | `/api/v1/models/mlx/list` | MLX modellerini listele |
+| `POST` | `/api/v1/models/mlx/load` | MLX modelini belleğe yükle |
+| `POST` | `/api/v1/models/mlx/unload` | MLX modelini bellekten boşalt |
+| `POST` | `/api/v1/models/mlx/convert` | HF modelini MLX'e dönüştür |
+| `GET` | `/api/v1/models/mlx/info` | MLX model bilgisi |
+
+### 💬 Kod Tamamlama
+
+| Metod | Endpoint | Açıklama |
+|-------|----------|----------|
+| `POST` | `/api/v1/models/complete` | Metin tamamlama (hızlı model) |
+| `POST` | `/api/v1/models/fim` | Fill-in-the-Middle kod tamamlama |
+| `POST` | `/api/v1/models/chat` | Sohbet tamamlama (akıllı model) |
+
+### 🔍 RAG / Bağlam
+
+| Metod | Endpoint | Açıklama |
+|-------|----------|----------|
+| `POST` | `/api/v1/rag/index` | Proje indeksle |
+| `POST` | `/api/v1/rag/search` | Kod ara |
+| `POST` | `/api/v1/rag/context` | Prompt bağlamı oluştur |
+
+### 🖥️ Sistem
+
+| Metod | Endpoint | Açıklama |
+|-------|----------|----------|
+| `GET` | `/api/v1/system/health` | Sağlık kontrolü |
+| `GET` | `/api/v1/system/hardware` | Donanım profili |
+| `GET` | `/api/v1/system/info` | Sistem bilgisi |
+
+### 📦 Diğer
+
+| Metod | Endpoint | Açıklama |
+|-------|----------|----------|
+| `GET` | `/api/v1/projects` | Projeleri listele |
+| `POST` | `/api/v1/projects` | Proje oluştur |
+| `GET` | `/api/v1/datasets` | Verisetlerini listele |
+| `POST` | `/api/v1/training/start` | Eğitim başlat |
+| `GET` | `/api/v1/benchmarks/runs` | Benchmark sonuçları |
+| `POST` | `/api/v1/jobs` | İş oluştur |
+
+---
+
+## 🔧 Yapılandırma
+
+`.env` dosyası:
+
+```env
+YONTAI_ENV=development
+YONTAI_HOST=127.0.0.1
+YONTAI_PORT=8765
+YONTAI_DATABASE_URL=sqlite:///./yontai.db
+YONTAI_OLLAMA_HOST=http://127.0.0.1:11434
+```
+
+---
+
+## 🧪 Test
+
+```bash
+cd apps/backend
+
+# Tüm testleri çalıştır
+pytest tests/ -v
+
+# Belirli testleri çalıştır
+pytest tests/test_health.py -v
+pytest tests/test_model_chat.py -v
+```
+
+Test sonuçları: **✅ 8/8 passed**
+
+---
+
+## 📊 Performans (M1 Pro 16 GB)
+
+| Model | Quantization | Token/s | RAM Kullanımı |
+|-------|-------------|---------|---------------|
+| DeepSeek-Coder 1.3B | Q4 | ~45-55 | ~2.5 GB |
+| DeepSeek-Coder 6.7B | Q4 | ~15-22 | ~8 GB |
+| CodeQwen-7B | Q4 | ~12-18 | ~7 GB |
+| StarCoder2-3B | Q4 | ~30-40 | ~4 GB |
+| FIM (1.3B) | Q4 | <200ms | ~2.5 GB |
+
+---
+
+## 📁 Proje Yapısı
 
 ```
 YontAI/
 ├── apps/
-│   ├── backend/          # FastAPI backend servisi
-│   │   ├── yontai/
-│   │   │   ├── api/      # REST API route'ları (11 grup)
-│   │   │   ├── training/ # Fine-tuning servisi
-│   │   │   ├── runtime/  # AI runtime'lar (6 adet)
-│   │   │   ├── jobs/     # İş kuyruğu sistemi
-│   │   │   ├── db/       # Veritabanı modelleri (11 tablo)
-│   │   │   └── core/     # Konfigürasyon, güvenlik, logging
-│   │   └── tests/        # Pytest testleri
-│   └── desktop/          # Tauri v2 masaüstü uygulaması
-├── packages/
-│   ├── shared-types/     # Paylaşılan TypeScript tipleri
-│   ├── ui/               # UI component kütüphanesi
-│   └── config/           # Ortak konfigürasyon
-├── models/               # Model depolama
-├── datasets/             # Dataset depolama
-└── runs/                 # MLflow run kayıtları
+│   ├── backend/
+│   │   └── yontai/
+│   │       ├── api/routes/       # API endpoint'leri
+│   │       ├── core/             # Konfigürasyon, donanım, güvenlik
+│   │       ├── db/               # Veritabanı modelleri
+│   │       ├── integrations/     # MLX, Ollama entegrasyonları
+│   │       ├── models/           # Model kaydı, orkestratör
+│   │       ├── rag/              # RAG bağlam motoru
+│   │       ├── runtime/          # MLX, HF, PEFT runtime'ları
+│   │       └── training/         # LoRA eğitimi
+│   └── desktop/                  # Tauri masaüstü uygulaması
+├── models/                       # İndirilen modeller
+├── datasets/                     # Verisetleri
+└── exports/                      # Dışa aktarımlar
 ```
-
-### 📋 API Rotaları
-
-| Route Grubu | Açıklama |
-|---|---|
-| `/api/v1/system` | Sistem durumu, donanım bilgisi |
-| `/api/v1/models` | Model CRUD, HuggingFace/Ollama keşif |
-| `/api/v1/datasets` | Veri kümesi yönetimi |
-| `/api/v1/training` | Fine-tuning planlama ve çalıştırma |
-| `/api/v1/benchmarks` | Performans testleri |
-| `/api/v1/diagnostics` | Sistem tanılama (Model Doctor) |
-| `/api/v1/exports` | Model dışa aktarma |
-| `/api/v1/deployments` | Model dağıtım |
-| `/api/v1/jobs` | İş kuyruğu yönetimi |
-| `/api/v1/files` | Dosya gezinti ve çıkarma |
-
-### 🧪 Test Durumu
-
-```bash
-# Backend testleri (8/8 geçiyor)
-cd apps/backend && source .venv/bin/activate && pytest -v
-
-# Frontend lint
-cd apps/desktop && pnpm lint
-```
-
-### 💼 Neden YontAI?
-
-| Özellik | **YontAI** | LM Studio | Ollama | Axolotl |
-|---|---|---|---|---|
-| Fine-Tuning | ✅ **7+ yöntem** | ❌ | ❌ | ✅ |
-| GUI Masaüstü | ✅ **Tauri** | ✅ | ❌ CLI | ❌ |
-| Benchmark | ✅ | ✅ | ❌ | ❌ |
-| Export/Deploy | ✅ | ⚠️ Kısmi | ✅ | ❌ |
-| Türkçe UI | ✅ **Evet** | ❌ | ❌ | ❌ |
-| Lokal Çalışma | ✅ | ✅ | ✅ | ✅ |
-| Maliyet | **Tek seferlik lisans** | Ücretsiz | Ücretsiz | Ücretsiz |
-
-### 📄 Lisans
-
-Ticari lisans. Detaylı bilgi için iletişime geçin.
-
-### 📞 İletişim
-
-- GitHub: [WeAreTheArtMakers](https://github.com/WeAreTheArtMakers)
 
 ---
 
-> ⚠️ **Not:** Bu depo kaynak kod içermektedir. Kurulum ve çalıştırma için gerekli bağımlılıkların tamamı kullanıcı tarafından sağlanmalıdır. Hazır binary paketler için lisanslı sürümü edinin.
+## 🤝 Katkıda Bulunma
+
+1. Fork et
+2. Feature branch oluştur (`git checkout -b feature/yeni-ozellik`)
+3. Değişiklikleri commit et (`git commit -m 'feat: yeni özellik'`)
+4. Branch'i push et (`git push origin feature/yeni-ozellik`)
+5. Pull Request aç
+
+### Commit Mesajı Formatı
+
+```
+feat: yeni özellik
+fix: hata düzeltmesi
+docs: dökümantasyon güncellemesi
+refactor: kod iyileştirmesi
+perf: performans iyileştirmesi
+test: test ekleme/düzeltme
+```
+
+---
+
+## 🗺️ Geliştirme Yol Haritası
+
+- [x] **Faz 1** — MLX entegrasyonu, FIM tamamlama, model dönüşümü ✅
+- [x] **Faz 2** — RAG bağlam motoru, kod indeksleme ✅
+- [x] **Faz 3** — Çoklu model orkestrasyonu, bellek optimizasyonu ✅
+- [x] **Faz 4** — Prompt şablonları, API iyileştirmeleri ✅
+- [ ] **Faz 5** — VS Code eklentisi
+- [ ] **Faz 6** — Kullanıcı alışkanlıklarından öğrenen prompt adaptasyonu
+- [ ] **Faz 7** — DeepSeek V4 Flash entegrasyonu (yayınlandığında)
+
+---
+
+## 📝 Lisans
+
+MIT License — Detaylar için [LICENSE](LICENSE) dosyasına bakın.
+
+---
+
+<a name="english"></a>
+## 🇬🇧 English
+
+**YontAI** is a privacy-first, local AI coding assistant optimized for Apple Silicon (M1/M2/M3/M4). It combines MLX, Ollama, and llama.cpp backends in a unified interface, understands project context (RAG), and provides intelligent code completion (FIM).
+
+> 🚀 **Optimized for M1 Pro 16 GB**. Up to 40% speed improvement on GPU with quantized models!
+
+### Key Features
+
+| Feature | Description |
+|---------|-------------|
+| **MLX Support** | Apple Silicon-optimized MLX format model inference |
+| **Multi-Model** | Tiered strategy: Fast (1-3B FIM) + Smart (7-16B chat) |
+| **FIM Completion** | DeepSeek-Coder Fill-in-the-Middle format |
+| **RAG Context** | tree-sitter + ChromaDB for code indexing and smart context retrieval |
+| **HF → MLX** | One-click HuggingFace to MLX conversion |
+| **LRU Cache** | 16 GB RAM optimized with automatic model unloading |
+| **Ollama Compatible** | Full Ollama compatibility for existing models |
+| **Turkish Prompts** | Turkish code explanation, testing, refactoring templates |
+
+### Quick Start
+
+```bash
+git clone https://github.com/WeAreTheArtMakers/YontAI.git
+cd YontAI/apps/backend
+pip install -e ".[mlx,rag]"
+
+# Start backend
+uvicorn yontai.main:app --host 127.0.0.1 --port 8765 --reload
+```
+
+### Tech Stack
+
+```
+Frontend:    React 18 · TypeScript · TailwindCSS · shadcn/ui
+Desktop:     Tauri v2 (Rust)
+Backend:     FastAPI · Python 3.11+ · SQLAlchemy · Alembic
+AI Runtime:  MLX · 🤗 Transformers · PEFT · TRL · Unsloth
+Vector DB:   ChromaDB
+Database:    SQLite

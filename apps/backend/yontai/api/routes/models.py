@@ -1,11 +1,17 @@
+import logging
+
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile
 from sqlalchemy.orm import Session
 
 from yontai.core.exceptions import OllamaConnectionError, OllamaModelError
+from yontai.core.hardware import get_optimized_config
 from yontai.db.models import Model
 from yontai.db.session import get_db
+from yontai.integrations.mlx_provider import MLXProviderClient
 from yontai.integrations.ollama import OllamaClient
+from yontai.models.orchestrator import ModelOrchestrator, TieredModelConfig
 from yontai.models.service import ModelRegistryService
+from yontai.rag.context_engine import ContextEngine
 from yontai.schemas.models import (
     ChatRequest,
     ChatResponse,
@@ -18,7 +24,46 @@ from yontai.schemas.models import (
     ModelUpdate,
 )
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter()
+
+# Global orkestratör instance
+_orchestrator: ModelOrchestrator | None = None
+_mlx_provider: MLXProviderClient | None = None
+_context_engine: ContextEngine | None = None
+
+
+def _get_orchestrator() -> ModelOrchestrator:
+    global _orchestrator
+    if _orchestrator is None:
+        config = TieredModelConfig()
+        hw_config = get_optimized_config()
+        if hw_config["preferred_backend"] == "mlx":
+            config.fast_backend = "mlx"
+            config.smart_backend = "mlx"
+        _orchestrator = ModelOrchestrator(config)
+    return _orchestrator
+
+
+def _get_mlx_provider() -> MLXProviderClient | None:
+    global _mlx_provider
+    if _mlx_provider is None:
+        try:
+            _mlx_provider = MLXProviderClient()
+        except Exception as exc:
+            logger.warning("MLX provider başlatılamadı: %s", exc)
+    return _mlx_provider
+
+
+def _get_context_engine() -> ContextEngine | None:
+    global _context_engine
+    if _context_engine is None:
+        try:
+            _context_engine = ContextEngine()
+        except Exception as exc:
+            logger.warning("Context engine başlatılamadı: %s", exc)
+    return _context_engine
 
 
 @router.get("", response_model=list[ModelRead])

@@ -1,8 +1,8 @@
 [project]
 name = "yontai-backend"
-version = "0.1.0"
-description = "YontAI local FastAPI backend and AI workflow orchestrator."
-requires-python = ">=3.12,<3.13"
+version = "0.2.0"
+description = "YontAI - Yerel Yapay Zeka Kod Asistanı (MLX + RAG + Multi-Model)"
+requires-python = ">=3.11,<3.13"
 dependencies = [
   "alembic>=1.14.0",
   "fastapi>=0.115.0",
@@ -18,7 +18,10 @@ dependencies = [
   "python-multipart>=0.0.18",
   "sqlalchemy>=2.0.36",
   "sse-starlette>=2.1.3",
-  "uvicorn[standard]>=0.32.0"
+  "uvicorn[standard]>=0.32.0",
+  "numpy>=1.26.0",
+  "aiofiles>=24.1.0",
+  "orjson>=3.10.0"
 ]
 
 [project.optional-dependencies]
@@ -27,13 +30,26 @@ ai = [
   "peft>=0.13.0",
   "sentence-transformers>=3.3.0",
   "transformers>=4.46.0",
-  "trl>=0.12.0"
+  "trl>=0.12.0",
+  "torch>=2.4.0",
+  "accelerate>=1.0.0",
+  "bitsandbytes>=0.44.0"
+]
+mlx = [
+  "mlx>=0.20.0",
+  "mlx-lm>=0.20.0"
+]
+rag = [
+  "chromadb>=0.5.0",
+  "tree-sitter>=0.23.0",
+  "tokenizers>=0.20.0"
 ]
 dev = [
   "mypy>=1.13.0",
   "pytest>=8.3.0",
   "pytest-asyncio>=0.24.0",
-  "ruff>=0.8.0"
+  "ruff>=0.8.0",
+  "httpx>=0.28.0"
 ]
 
 [build-system]
@@ -45,7 +61,7 @@ packages = ["yontai"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
@@ -54,6 +70,6 @@ select = ["E", "F", "I", "UP", "B"]
 "yontai/api/routes/*.py" = ["B008"]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.11"
 strict = true
 plugins = ["pydantic.mypy"]

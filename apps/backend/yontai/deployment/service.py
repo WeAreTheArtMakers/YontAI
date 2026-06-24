@@ -7,12 +7,11 @@ from __future__ import annotations
 
 import json
 from datetime import UTC, datetime
-from pathlib import Path
 
 from sqlalchemy import select
 
 from yontai.core.paths import storage_path
-from yontai.db.models import Deployment, Job, RunStatus
+from yontai.db.models import Deployment, Job
 from yontai.repositories.jobs import JobRepository
 
 
@@ -23,7 +22,7 @@ async def deploy_model_job(job: Job, repo: JobRepository) -> None:
     """
     payload = job.payload or {}
     model_id = payload.get("model_id")
-    export_path_str = payload.get("export_path")
+    payload.get("export_path")
     deployment_type = payload.get("deployment_type", "local")
     port = payload.get("port", 8766)
     
